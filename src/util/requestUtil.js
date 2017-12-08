@@ -2,7 +2,8 @@ import Dimensions from "Dimensions";
 import { PixelRatio, Platform, AsyncStorage } from "react-native";
 var extend = require("extend");
 
-const baseUrl = "http://localhost:3000/crm_web/v1.0";
+const baseUrl = "https://appdownload.yonyou.com:18080/servlet/downloadservlet";
+
 
 function getBaseUrl() {
     return new Promise((resolve, reject) => {
@@ -40,6 +41,7 @@ const default_config = {
     ],
     _after: [
         result => {
+            debugger
             //response
             console.log(result)
         }
@@ -79,9 +81,11 @@ export default class RequestUtil {
                 return this._timeOut(fetch(fetchUrl, opts), 20000);
             })
             .then(rs => {
+                debugger
                 return rs.json();
             })
             .then(json => {
+                debugger
                 if (_after.length) {
                     for (let f of _after) {
                         json = f(json);
@@ -90,6 +94,7 @@ export default class RequestUtil {
                 return json;
             })
             .catch(err => {
+                debugger
                 console.log(err);
             });
     }

@@ -2,6 +2,7 @@ import { TabNavigator, StackNavigator, addNavigationHelpers, TabBarBottom } from
 import React, { Component } from "react";
 
 import AppListPage from "../business/applist/page/AppListPage"
+import AppDetailPage from "../business/appdetail/page/AppDetailPage"
 
 
 export default class AppNavigator extends Component {
@@ -9,6 +10,9 @@ export default class AppNavigator extends Component {
         const routeConfigMap = {
             applist:{
                 screen: AppListPage
+            },
+            appdetail:{
+                screen: AppDetailPage
             }
         };
         const StackNavigatorConfig = {
