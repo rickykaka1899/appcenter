@@ -4,7 +4,8 @@ import * as TYPES from "../actions/actiontypes";
 export default function AppReducer(
 	state = {
 		appList:[],	//设置初始值
-		appDetail:{}
+		appDetail:{},
+		appVersionList:[]
 	},
 	action
 ) {
@@ -12,6 +13,12 @@ export default function AppReducer(
 		case TYPES.GETAPPLIST:{
 			return Object.assign({}, state, {
                 appList: action.applist.list
+            });
+		}
+		break;
+		case TYPES.GETAPPVERSIONLIST:{
+			return Object.assign({}, state, {
+                appVersionList: action.appversionlist.list
             });
 		}
 		break;

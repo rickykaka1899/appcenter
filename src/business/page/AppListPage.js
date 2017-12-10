@@ -23,7 +23,7 @@ class AppListPage extends React.Component{
 
   onItemPress = item =>{
     const { navigate } = this.props.navigation;
-    navigate("appdetail",{title:item.name});
+    navigate("appdetail",{item:item});
   }
 
   componentWillMount(){

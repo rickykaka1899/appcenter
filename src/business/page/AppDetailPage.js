@@ -17,17 +17,25 @@ import * as Actions from "../actions/AppActions";  //替换为当前actions
 import ItemCell from "../common/ItemCell"
 
 class AppDetailPage extends React.Component{
-  static navigationOptions = {
-    title: "应用",
-  };
+    static navigationOptions = ({ navigation }) => ({
+        title: `${navigation.state.params.item.name}`,
+      });
 
   onItemPress = item =>{
-    const { navigate } = this.props.navigation;
-    navigate("appdetail",{title:item.name});
+    // const { navigate } = this.props.navigation;
+    // navigate("appdetail",{title:item.name});
   }
 
   componentWillMount(){
-    this.props.actions.getAppList();
+    const { state } = this.props.navigation;
+    var id = state.params.item.id;
+    this.props.actions.getAppVersionList(id);
+  }
+
+  componentWillUnmount(){
+      this.setState = {
+        appVersionList:[]
+      }
   }
 
   onRefresh = () =>{
@@ -39,11 +47,11 @@ class AppDetailPage extends React.Component{
   };
 
   render() {
-    const applist = this.props.appList;    
+    const versionlist = this.props.versionList;    
     return (
       <FlatList style={styles.container}   
         ItemSeparatorComponent={this.separator}      
-        data={applist}
+        data={versionlist}
         renderItem={({item}) => 
           <TouchableHighlight onPress={() => this.onItemPress(item)}>
             <View>
@@ -71,7 +79,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    detail: state.AppReducer.appDetail 
+    versionList: state.AppReducer.appVersionList 
   };
 };
 
