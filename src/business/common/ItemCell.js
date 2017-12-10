@@ -4,9 +4,15 @@ import {
   StyleSheet,
   Image,
   Text,
-  FlatList,
+  Dimensionsnsions,
+  Dimensions,
+  Platform,
+  Linking,
   TouchableHighlight
 } from 'react-native';
+
+const downloadPic = require("../../assets/download.png")
+const iosPrefix = "itms-services://?action=download-manifest&url="
 
 export default class ItemCell extends React.Component{
     onItemPress =() =>{
@@ -14,18 +20,31 @@ export default class ItemCell extends React.Component{
         this.props.onPress(item);
     }
 
+    downLoad =() =>{
+        debugger
+        const {downloadurl} = this.props.data;   
+        if (Platform.OS === "ios") {
+            Linking.openURL(iosPrefix + downloadurl)
+                   .catch(err => 
+                    console.error('An error occurred', err));
+        }else if (Platform.OS === "android") {
+            
+        }
+    }
+
     render(){
         const {picurl, name, time} = this.props.data;
         return(
-            // <TouchableHighlight onPress={this.onItemPress}>
             <View style={styles.container}>
-                <Image style={styles.img} source={{uri:picurl}} />
-                <View style={styles.textview}>
-                    <Text>{name}</Text>
-                    <Text>{time}</Text>
+                <Image style={styles.appImg} source={{uri:picurl}} />
+                <View style={styles.textView}>
+                    <Text style={styles.nameText}>{name}</Text>
+                    <Text style={styles.timeText}>{time}</Text>
                 </View>
+                <TouchableHighlight onPress={this.downLoad}>
+                    <Image source={downloadPic}/>
+                </TouchableHighlight>
             </View>
-            // </TouchableHighlight>
         )
     
     } 
@@ -35,17 +54,32 @@ const styles = StyleSheet.create({
     container:{
       flex:1,
       flexDirection:"row",
+      alignItems:"center",
       backgroundColor:"#FFFFFF",
-      left:16,
-      right:16
+      marginLeft:16,
+      marginRight:16,
+      height:48
     },
-    img:{
-        width:50,
-        height:50,
+    appImg:{
+        width:40,
+        height:40,
     },
-    textview:{
+    textView:{
+        left:16,
         flexDirection:"column",
-        justifyContent: "center",
-        alignItems:"flex-start"
+        justifyContent: "space-between",
+        alignItems:"flex-start",
+        flex:1
+    },
+    nameText:{
+        fontSize:16,
+        color:"#333333"
+    },
+    timeText:{
+        fontSize:14,
+        color:"#999999"
+    },
+    arrowImg:{
+        
     }
 });

@@ -1,12 +1,17 @@
 import Dimensions from "Dimensions";
 import { PixelRatio, Platform, AsyncStorage } from "react-native";
 
-const baseUrl = "https://appdownload.yonyou.com:18080/servlet/downloadservlet";
+const iOSURL = "https://appdownload.yonyou.com:18080/servlet/downloadservlet";
+const AndroidURL = "https://appdownload.yonyou.com:18080/servlet/android";
 
 
 function getBaseUrl() {
     return new Promise((resolve, reject) => {
-        return resolve(baseUrl);
+        if (Platform.OS === "android") {
+            return resolve(AndroidURL);   
+        }else if (Platform.OS === "ios") {
+            return resolve(iOSURL);            
+        }
     });
 }
 

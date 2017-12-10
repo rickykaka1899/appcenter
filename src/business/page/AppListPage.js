@@ -51,7 +51,7 @@ class AppListPage extends React.Component{
             </View>
           </TouchableHighlight>}
         onRefresh={this.onRefresh}
-        refreshing={false}        
+        refreshing={false}
       />
     )
   }
@@ -60,7 +60,7 @@ class AppListPage extends React.Component{
 const styles = StyleSheet.create({
   container:{
     flex:1,
-    backgroundColor:"#FFFFFF"
+    backgroundColor:"#FFFFFF",
   },
   separator: {
     height: 0.5,
