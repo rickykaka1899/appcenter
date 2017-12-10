@@ -1,8 +1,8 @@
 import { TabNavigator, StackNavigator, addNavigationHelpers, TabBarBottom } from "react-navigation";
 import React, { Component } from "react";
 
-import AppListPage from "../business/applist/page/AppListPage"
-import AppDetailPage from "../business/appdetail/page/AppDetailPage"
+import AppListPage from "../business/page/AppListPage"
+import AppDetailPage from "../business/page/AppDetailPage"
 
 
 export default class AppNavigator extends Component {

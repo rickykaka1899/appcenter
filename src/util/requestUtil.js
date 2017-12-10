@@ -1,6 +1,5 @@
 import Dimensions from "Dimensions";
 import { PixelRatio, Platform, AsyncStorage } from "react-native";
-var extend = require("extend");
 
 const baseUrl = "https://appdownload.yonyou.com:18080/servlet/downloadservlet";
 
@@ -17,35 +16,6 @@ const default_config = {
         "Accept": "application/json",  
         "Content-Type": "application/json"
     },
-    _before: [
-        (url, options) => {
-            switch (options.method) {
-                case "POST":
-                    {
-                        options.body = JSON.stringify(options.body);
-                        return {
-                            url: url,
-                            opts: options
-                        };
-                    }
-                    break;
-                default:
-                    {
-                        return {
-                            url: url,
-                        };
-                    }
-                    break;
-            }
-        }
-    ],
-    _after: [
-        result => {
-            debugger
-            //response
-            console.log(result)
-        }
-    ]
 };
 
 export default class RequestUtil {
@@ -59,20 +29,6 @@ export default class RequestUtil {
     }
 
     request(url, opts) {
-        // 1. 需要设置deep = true
-        // 2. 需要merge实例的config, config优先级: 参数 > 实例配置 > 默认配置
-        opts = extend(true, {}, opts, default_config, this.config, opts);
-        let _before = opts._before;
-        let _after = opts._after;
-
-        if (_before.length) {
-            for (let f of _before) {
-                let rs = f(url, opts);
-                url = rs.url;
-                opts = rs.opts;
-            }
-        }
-        // 拼接baseURL和授权信息 确保授权信息和baseURL都存在
         return getBaseUrl()
             .then(baseUrl => {
                 let fetchUrl = baseUrl + url;
@@ -81,20 +37,12 @@ export default class RequestUtil {
                 return this._timeOut(fetch(fetchUrl, opts), 20000);
             })
             .then(rs => {
-                debugger
                 return rs.json();
             })
             .then(json => {
-                debugger
-                if (_after.length) {
-                    for (let f of _after) {
-                        json = f(json);
-                    }
-                }
                 return json;
             })
             .catch(err => {
-                debugger
                 console.log(err);
             });
     }

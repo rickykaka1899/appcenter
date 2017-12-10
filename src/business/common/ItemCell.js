@@ -9,30 +9,23 @@ import {
 } from 'react-native';
 
 export default class ItemCell extends React.Component{
-    //   constructor(props) {
-    //     super(props);
-    //     this.state = {
-    //         phone: "",
-    //         code: "",
-    //     };
-    // }
     onItemPress =() =>{
         const item = this.props.data;        
         this.props.onPress(item);
     }
 
     render(){
-        const item = this.props.data;
+        const {picurl, name, time} = this.props.data;
         return(
-            <TouchableHighlight onPress={this.onItemPress}>
+            // <TouchableHighlight onPress={this.onItemPress}>
             <View style={styles.container}>
-                <Image style={styles.img} source={{uri:item.img}} />
+                <Image style={styles.img} source={{uri:picurl}} />
                 <View style={styles.textview}>
-                    <Text>{item.title}</Text>
-                    <Text>{item.des}</Text>
+                    <Text>{name}</Text>
+                    <Text>{time}</Text>
                 </View>
             </View>
-            </TouchableHighlight>
+            // </TouchableHighlight>
         )
     
     } 
@@ -43,10 +36,8 @@ const styles = StyleSheet.create({
       flex:1,
       flexDirection:"row",
       backgroundColor:"#FFFFFF",
-      marginTop:8,
-      marginLeft:16,
-      marginRight:16,
-      marginBottom:8
+      left:16,
+      right:16
     },
     img:{
         width:50,

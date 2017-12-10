@@ -1,7 +1,7 @@
 //用于网络请求，view对应的action
 
 import * as TYPES from "./actiontypes";
-import RequestUtil from "../../../util/requestUtil"
+import RequestUtil from "../../util/requestUtil"
 
 
 const getAppListActionType = "?type=getAppList"
@@ -40,8 +40,11 @@ export function getAppDetail(){
 }
 
 function getAppListSuccess(data){
-	debugger
 	console.log(data);
+	return{
+		type:TYPES.GETAPPLIST,
+		applist:data
+	}
 }
 
 function getAppDetailSuccess(data){
