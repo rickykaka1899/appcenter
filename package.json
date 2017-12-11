@@ -9,11 +9,12 @@
     "build-android": "react-native bundle --entry-file='index.js' --bundle-output='./android/bundle/main.jsbundle' --dev=false --platform='android' --assets-dest='./android'"
   },
   "dependencies": {
+    "moment": "^2.19.1",
     "react": "16.0.0",
     "react-native": "0.51.0",
-    "moment": "^2.19.1",
     "react-native-animatable": "^1.2.4",
     "react-native-communications": "^2.2.1",
+    "react-native-fs": "^2.9.2",
     "react-native-percentage-circle": "^1.0.6",
     "react-native-scrollable-tab-view": "^0.8.0",
     "react-native-swipe-list-view": "^0.4.1",

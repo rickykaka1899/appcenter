@@ -11,6 +11,8 @@ import {
   TouchableHighlight
 } from 'react-native';
 
+import RNFS from 'react-native-fs';
+
 const downloadPic = require("../../assets/download.png")
 const iosPrefix = "itms-services://?action=download-manifest&url="
 
@@ -22,15 +24,61 @@ export default class ItemCell extends React.Component{
 
     downLoad =() =>{
         debugger
-        const {downloadurl} = this.props.data;   
         if (Platform.OS === "ios") {
+            const {downloadurl} = this.props.data;   
             Linking.openURL(iosPrefix + downloadurl)
                    .catch(err => 
                     console.error('An error occurred', err));
         }else if (Platform.OS === "android") {
-            
+            this.downLoadAPK(this.props.data)   
         }
     }
+
+    downLoadAPK = (item) =>{
+        // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
+
+        // 图片
+        // const downloadDest = `${RNFS.MainBundlePath}/${((Math.random() * 1000) | 0)}.jpg`;
+        // const formUrl = 'http://img.kaiyanapp.com/c7b46c492261a7c19fa880802afe93b3.png?imageMogr2/quality/60/format/jpg';
+        debugger
+        const{name,time,downloadurl} = item;
+        // 文件地址
+        const downloadDest = `${RNFS.DocumentDirectoryPath}/${name+"_"+time}.apk`;
+
+        const options = {
+            fromUrl: downloadurl,
+            toFile: downloadDest,
+            background: true,
+            begin: (res) => {
+                console.log('begin', res);
+                console.log('contentLength:', res.contentLength / 1024 / 1024, 'M');
+            },
+            progress: (res) => {
+
+                let pro = res.bytesWritten / res.contentLength;
+
+                this.setState({
+                    progressNum: pro,
+                });
+            }
+        };
+        try {
+            const ret = RNFS.downloadFile(options);
+            ret.promise.then(res => {
+                console.log('success', res);
+
+                console.log('file://' + downloadDest)
+
+            }).catch(err => {
+                console.log('err', err);
+            });
+        }
+        catch (e) {
+            console.log(error);
+        }
+
+    }
+
 
     render(){
         const {picurl, name, time} = this.props.data;
