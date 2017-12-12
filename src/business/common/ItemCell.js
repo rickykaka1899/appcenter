@@ -8,7 +8,8 @@ import {
   Dimensions,
   Platform,
   Linking,
-  TouchableHighlight
+  TouchableHighlight,
+  NativeModules
 } from 'react-native';
 
 import RNFS from 'react-native-fs';
@@ -17,13 +18,18 @@ const downloadPic = require("../../assets/download.png")
 const iosPrefix = "itms-services://?action=download-manifest&url="
 
 export default class ItemCell extends React.Component{
+    // constructor(){
+    //     this.state = {
+    //         progressNum : 0
+    //     }
+    // }
+
     onItemPress =() =>{
         const item = this.props.data;        
         this.props.onPress(item);
     }
 
     downLoad =() =>{
-        debugger
         if (Platform.OS === "ios") {
             const {downloadurl} = this.props.data;   
             Linking.openURL(iosPrefix + downloadurl)
@@ -34,21 +40,47 @@ export default class ItemCell extends React.Component{
         }
     }
 
-    downLoadAPK = (item) =>{
-        // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
+    downLoadPicTest = () => {
+        var basePath;
+        if (Platform.OS === "ios") {
+            basePath = RNFS.MainBundlePath;
+        }else if (Platform.OS === "android") {
+            basePath = RNFS.DocumentDirectoryPath;
+        }
 
-        // 图片
-        // const downloadDest = `${RNFS.MainBundlePath}/${((Math.random() * 1000) | 0)}.jpg`;
-        // const formUrl = 'http://img.kaiyanapp.com/c7b46c492261a7c19fa880802afe93b3.png?imageMogr2/quality/60/format/jpg';
-        debugger
+        const { name,time,picurl } = this.props.data;
+        var filePath = basePath + '/' + name + "_" + time + ".png";
+        console.log("filePath",filePath)
+        var download = RNFS.downloadFile({
+            fromUrl: picurl,
+            toFile: filePath,
+            begin: (res) => {
+                console.log('begin', res);
+                console.log('contentLength:', res.contentLength / 1024 / 1024, 'M');
+            },
+            progress: res => {
+                console.log((res.bytesWritten / res.contentLength).toFixed(2));
+            },
+        });
+        download.promise.then(result => {
+            console.log(result)
+            // if(result.statusCode == 200){
+            //     NativeModules.InstallApk.install(filePath);
+            // }
+        }).catch(err =>{
+            console.log("download error", err)
+        });
+    }
+
+    downLoadAPK = (item) =>{        
         const{name,time,downloadurl} = item;
         // 文件地址
         const downloadDest = `${RNFS.DocumentDirectoryPath}/${name+"_"+time}.apk`;
-
+        console.log("apk file is:",downloadDest)
         const options = {
             fromUrl: downloadurl,
             toFile: downloadDest,
-            background: true,
+            // background: true,
             begin: (res) => {
                 console.log('begin', res);
                 console.log('contentLength:', res.contentLength / 1024 / 1024, 'M');
@@ -56,11 +88,12 @@ export default class ItemCell extends React.Component{
             progress: (res) => {
 
                 let pro = res.bytesWritten / res.contentLength;
-
+                console.log("now process is:"+pro)
                 this.setState({
                     progressNum: pro,
                 });
-            }
+            },
+            progressDivider: 1
         };
         try {
             const ret = RNFS.downloadFile(options);
@@ -74,7 +107,7 @@ export default class ItemCell extends React.Component{
             });
         }
         catch (e) {
-            console.log(error);
+            console.log("err" + error);
         }
 
     }
@@ -89,7 +122,7 @@ export default class ItemCell extends React.Component{
                     <Text style={styles.nameText}>{name}</Text>
                     <Text style={styles.timeText}>{time}</Text>
                 </View>
-                <TouchableHighlight onPress={this.downLoad}>
+                <TouchableHighlight onPress={this.downLoadPicTest}>
                     <Image source={downloadPic}/>
                 </TouchableHighlight>
             </View>
