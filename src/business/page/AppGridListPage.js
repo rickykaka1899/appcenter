@@ -14,11 +14,10 @@ import {
 
 import * as Actions from "../actions/AppActions";  //替换为当前actions
 
-import ItemCell from "../common/ItemCell"
 import GridCell from "../common/GridCell"
+import GridTwoCell from "../common/GridTwoCell"
 
-
-class AppListPage extends React.Component{
+class AppGridListPage extends React.Component{
   static navigationOptions = {
     title: "应用",
   };
@@ -28,36 +27,31 @@ class AppListPage extends React.Component{
     navigate("appdetail",{item:item});
   }
 
-  componentWillMount(){
+  componentDidMount(){
+    debugger
     this.props.actions.getAppList();
   }
 
-  onRefresh = () =>{
-    this.props.actions.getAppList();    
-  }
-
-  separator = () => {
-    return <View style={styles.separator} />;
-  };
-
   render() {
-    const applist = this.props.appList;    
-    return (
-      <FlatList style={styles.container}   
-        ItemSeparatorComponent={this.separator}      
-        data={applist}
-        renderItem={({item}) => 
-          <TouchableHighlight onPress={() => this.onItemPress(item)}>
-            <View>
-              <GridCell data={item} {...this.props}/>
+    const applist = this.props.appList;
+    var data = applist[0];
+    var data2 = applist[1];
+    var datas = [data,data2];
+    debugger  
+    if (data == null) {
+        return(
+            <View style={styles.container}>
             </View>
-          </TouchableHighlight>}
-        onRefresh={this.onRefresh}
-        refreshing={false}
-        numColumns={2}
-      />
-    )
-  }
+        )
+    }else{
+        return (
+            <View style={styles.container}>
+                {/* <GridCell data={data}/> */}
+                <GridTwoCell datas = {datas} />
+            </View>
+        )
+      }
+    }
 }
 
 const styles = StyleSheet.create({
@@ -84,4 +78,4 @@ const dispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, dispatchToProps)(AppListPage);  //替换为当前page
+export default connect(mapStateToProps, dispatchToProps)(AppGridListPage);  //替换为当前page

@@ -1,3 +1,4 @@
+
 import React, { Component } from "react";
 import {
   View,
@@ -14,15 +15,12 @@ import {
 
 import RNFS from 'react-native-fs';
 
+const {height, width} = Dimensions.get('window');
+
 const downloadPic = require("../../assets/download.png")
 const iosPrefix = "itms-services://?action=download-manifest&url="
 
-export default class ItemCell extends React.Component{
-    // constructor(){
-    //     this.state = {
-    //         progressNum : 0
-    //     }
-    // }
+export default class GridCell extends React.Component{
 
     onItemPress =() =>{
         const item = this.props.data;        
@@ -38,38 +36,6 @@ export default class ItemCell extends React.Component{
         }else if (Platform.OS === "android") {
             this.downLoadAPK(this.props.data)   
         }
-    }
-
-    downLoadPicTest = () => {
-        var basePath;
-        if (Platform.OS === "ios") {
-            basePath = RNFS.MainBundlePath;
-        }else if (Platform.OS === "android") {
-            basePath = RNFS.DocumentDirectoryPath;
-        }
-
-        const { name,time,picurl } = this.props.data;
-        var filePath = basePath + '/' + name + "_" + time + ".png";
-        console.log("filePath",filePath)
-        var download = RNFS.downloadFile({
-            fromUrl: picurl,
-            toFile: filePath,
-            begin: (res) => {
-                console.log('begin', res);
-                console.log('contentLength:', res.contentLength / 1024 / 1024, 'M');
-            },
-            progress: res => {
-                console.log((res.bytesWritten / res.contentLength).toFixed(2));
-            },
-        });
-        download.promise.then(result => {
-            console.log(result)
-            // if(result.statusCode == 200){
-            //     NativeModules.InstallApk.install(filePath);
-            // }
-        }).catch(err =>{
-            console.log("download error", err)
-        });
     }
 
     downLoadAPK = (item) =>{        
@@ -112,45 +78,51 @@ export default class ItemCell extends React.Component{
 
     }
 
-
     render(){
-        const {picurl, name, time} = this.props.data;
+        const {picurl, name, time} = this.props.data;       
         return(
             <View style={styles.container}>
-                <Image style={styles.appImg} source={{uri:picurl}} />
-                <View style={styles.textView}>
-                    <Text style={styles.nameText}>{name}</Text>
-                    <Text style={styles.timeText}>{time}</Text>
+                <View style={styles.contentView}>
+                <View style={styles.topView}>
+                    <Image style={styles.appImg} source={{uri:picurl}} />
+                    <TouchableHighlight onPress={this.downLoad}>
+                        <Image source={downloadPic}/>
+                    </TouchableHighlight>
                 </View>
-                <TouchableHighlight onPress={this.downLoad}>
-                    <Image source={downloadPic}/>
-                </TouchableHighlight>
+                <Text style={styles.nameText}>{name}</Text>
+                <Text style={styles.timeText}>{time}</Text>
+            </View>
             </View>
         )
-    
-    } 
+    }
 }
 
 const styles = StyleSheet.create({
     container:{
-      flex:1,
-      flexDirection:"row",
-      alignItems:"center",
-      backgroundColor:"#FFFFFF",
-      marginLeft:16,
-      marginRight:16,
-      height:48
+        width:width/2,
+        height:160,
+        justifyContent: "center",
+        alignItems:"center",  
+        backgroundColor:"#DBDBDB",        
+    },
+    contentView:{
+        paddingLeft:16,
+        paddingTop:16,
+        paddingRight:16,
+        width:(width-16*3)/2,
+        height:140,
+        backgroundColor:"#FFFFFF",
+        borderRadius: 8,
+        justifyContent: "space-around",        
+    },
+    topView:{
+        flexDirection:"row",
+        justifyContent: "space-between",
+        alignItems:"center",
     },
     appImg:{
-        width:40,
-        height:40,
-    },
-    textView:{
-        left:16,
-        flexDirection:"column",
-        justifyContent: "space-between",
-        alignItems:"flex-start",
-        flex:1
+        width:50,
+        height:50,
     },
     nameText:{
         fontSize:16,
@@ -160,7 +132,4 @@ const styles = StyleSheet.create({
         fontSize:14,
         color:"#999999"
     },
-    arrowImg:{
-        
-    }
-});
+})

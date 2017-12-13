@@ -2,6 +2,7 @@ import { TabNavigator, StackNavigator, addNavigationHelpers, TabBarBottom } from
 import React, { Component } from "react";
 
 import AppListPage from "../business/page/AppListPage"
+import AppGridListPage from "../business/page/AppGridListPage"
 import AppDetailPage from "../business/page/AppDetailPage"
 
 
