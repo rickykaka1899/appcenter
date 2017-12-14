@@ -18,16 +18,19 @@ import RNFS from 'react-native-fs';
 const {height, width} = Dimensions.get('window');
 
 const downloadPic = require("../../assets/download.png")
+const infoPic = require("../../assets/info.png")
+
 const iosPrefix = "itms-services://?action=download-manifest&url="
 
 export default class GridCell extends React.Component{
 
-    onItemPress =() =>{
-        const item = this.props.data;        
-        this.props.onPress(item);
+    infoPress =() =>{
+        const item = this.props.data;
+        console.log(item)
+        this.props.infoPress(item)    
     }
 
-    downLoad =() =>{
+    downLoadPress =() =>{
         if (Platform.OS === "ios") {
             const {downloadurl} = this.props.data;   
             Linking.openURL(iosPrefix + downloadurl)
@@ -78,46 +81,28 @@ export default class GridCell extends React.Component{
 
     }
 
-    renderLeft(){
-        const {picurl, time} = this.props.data;
-        var name = this.props.data.name;
-        if (name.endsWith("NC63")) {
-            name = name.substr(0,name.length-4)
-        }
-        console.log("name is:", name);
-        return(
-            <View style={[styles.leftView,styles.contentView]}>
-                <View style={styles.topView}>
-                    <Image style={styles.appImg} source={{uri:picurl}} />
-                    <TouchableHighlight onPress={this.downLoad}>
-                        <Image source={downloadPic}/>
-                    </TouchableHighlight>
-                </View>
-                <View style={styles.bottomView}>
-                    <Text style={styles.nameText}>{name}</Text>
-                    <Text style={styles.timeText}>{time}</Text>
-                </View>
-            </View>
-        )
-    }
-
-    renderRight(){
+    renderCell(index){
         const {picurl, time} = this.props.data;
         var name = this.props.data.name;        
         if (name.endsWith("NC63")) {
             name = name.substr(0,name.length-4)
         }     
         return(
-            <View style={[styles.rightView,styles.contentView]}>
+            <View style={index%2 === 0 ? [styles.leftView,styles.contentView]:[styles.rightView,styles.contentView]}>
                 <View style={styles.topView}>
                     <Image style={styles.appImg} source={{uri:picurl}} />
-                    <TouchableHighlight onPress={this.downLoad}>
+                    <TouchableHighlight onPress={this.downLoadPress}>
                         <Image source={downloadPic}/>
                     </TouchableHighlight>
                 </View>
                 <View style={styles.bottomView}>
                     <Text style={styles.nameText}>{name}</Text>
-                    <Text style={styles.timeText}>{time}</Text>
+                    <View style={styles.infoView}>
+                        <Text style={styles.timeText}>{time}</Text>
+                        <TouchableHighlight onPress={this.infoPress}>
+                            <Image source={infoPic}/>
+                        </TouchableHighlight>
+                    </View>
                 </View>
             </View>
         )
@@ -127,7 +112,7 @@ export default class GridCell extends React.Component{
         const index = this.props.index;   
         return(
             <View style={styles.container}>
-                {index%2 === 0 ? this.renderLeft() : this.renderRight()}
+                {this.renderCell(index)}
             </View>
         )
     }
@@ -141,17 +126,17 @@ const styles = StyleSheet.create({
         backgroundColor:"#F2F2F2",        
     },
     leftView:{
-        left:16       
+        left:10      
     },
     rightView:{
-        left:8      
+        left:5     
     },
     contentView:{
         paddingLeft:16,
         paddingTop:16,
         paddingRight:16,
         paddingBottom:16,
-        width:(width-16*3)/2,
+        width:(width-10*3)/2,
         height:140,
         backgroundColor:"#FFFFFF",
         borderRadius: 8,
@@ -176,7 +161,13 @@ const styles = StyleSheet.create({
     },
     timeText:{
         top:4,
-        fontSize:14,
+        fontSize:13,
         color:"#5d77b3"
     },
+    infoView:{
+        flexDirection:"row",
+        justifyContent:"space-between",
+        alignItems:"center",
+        // height:44
+    }
 })

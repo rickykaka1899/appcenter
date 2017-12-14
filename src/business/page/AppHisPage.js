@@ -15,14 +15,15 @@ import {
 
 import * as Actions from "../actions/AppActions";  //替换为当前actions
 
-import ItemCell from "../common/ItemCell"
 
 const downloadPic = require("../../assets/download.png")
+const infoPic = require("../../assets/info.png")
+
 const {height, width} = Dimensions.get('window');
 
 class AppDetailPage extends React.Component{
     static navigationOptions = ({ navigation }) => ({
-        title: `${navigation.state.params.item.name}`,
+        title: "历史记录",
       });
 
 
@@ -30,7 +31,6 @@ class AppDetailPage extends React.Component{
     const { state } = this.props.navigation;
     var id = state.params.item.id;
     this.props.actions.getAppVersionList(id);
-    this.props.actions.getAppDetail(id);    
   }
 
   componentWillUnmount(){
@@ -45,13 +45,74 @@ class AppDetailPage extends React.Component{
     this.props.actions.getAppVersionList(id);   
   }
 
+  infoPress =(item) =>{
+    // const item = this.props.data;
+    console.log(item)
+    this.props.actions.getAppDetail(item.id);    
+  }
+
+  downLoadPress =(item) =>{
+    if (Platform.OS === "ios") {
+        const {downloadurl} = item;   
+        Linking.openURL(iosPrefix + downloadurl)
+               .catch(err => 
+                console.error('An error occurred', err));
+    }else if (Platform.OS === "android") {
+        this.downLoadAPK(item)   
+    }
+  }
+
+downLoadAPK = (item) =>{        
+    const{name,time,downloadurl} = item;
+    // 文件地址
+    const downloadDest = `${RNFS.DocumentDirectoryPath}/${name+"_"+time}.apk`;
+    console.log("apk file is:",downloadDest)
+    const options = {
+        fromUrl: downloadurl,
+        toFile: downloadDest,
+        // background: true,
+        begin: (res) => {
+            console.log('begin', res);
+            console.log('contentLength:', res.contentLength / 1024 / 1024, 'M');
+        },
+        progress: (res) => {
+
+            let pro = res.bytesWritten / res.contentLength;
+            console.log("now process is:"+pro)
+            this.setState({
+                progressNum: pro,
+            });
+        },
+        progressDivider: 1
+    };
+    try {
+        const ret = RNFS.downloadFile(options);
+        ret.promise.then(res => {
+            console.log('success', res);
+
+            console.log('file://' + downloadDest)
+
+        }).catch(err => {
+            console.log('err', err);
+        });
+    }
+    catch (e) {
+        console.log("err" + error);
+    }
+
+}
 
 
   renderContent(item){
     return(
         <View style={styles.contentView}>
             <Text>{item.time}</Text>
-            <Image source={downloadPic}/>
+            <TouchableHighlight onPress={() =>this.infoPress(item)}>
+              <Image source={infoPic}/>
+            </TouchableHighlight>
+            <TouchableHighlight onPress={() =>this.downLoadPress(item)}>
+              <Image source={downloadPic}/>
+            </TouchableHighlight>
         </View>
     )
   }
@@ -139,12 +200,11 @@ class AppDetailPage extends React.Component{
   render() {
     const versionlist = this.props.versionList;
     const { picurl,name } = this.props.navigation.state.params.item;
-    const detail = this.props.detail ? this.props.detail : "";
     return (
         <View style={styles.container}>
             <View style={styles.detailView}>
                 <Image style={styles.detaiImg} source={{uri:picurl}}/>
-                <Text>{detail}</Text>
+                <Text>{name}</Text>
             </View>
             <FlatList style={styles.container}   
                 data={versionlist}

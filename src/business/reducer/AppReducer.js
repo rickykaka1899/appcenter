@@ -5,7 +5,8 @@ export default function AppReducer(
 	state = {
 		appList:[],	//设置初始值
 		appDetail:"",
-		appVersionList:[]
+		appVersionList:[],
+		alertShow:false
 	},
 	action
 ) {
@@ -24,7 +25,14 @@ export default function AppReducer(
 		break;
 		case TYPES.GETAPPDETAIL:{
 			return Object.assign({}, state, {
-                appDetail: action.appdetail.detail
+				appDetail: action.appdetail.detail,
+				alertShow:true
+            });
+		}
+		break;
+		case TYPES.DISMISSALERT:{
+			return Object.assign({}, state, {
+				alertShow:false
             });
 		}
 		break;

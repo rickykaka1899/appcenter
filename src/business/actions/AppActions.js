@@ -54,6 +54,12 @@ export function getAppVersionList(param){
 	};
 }
 
+export function dismissAlert() {
+	return{
+		type:TYPES.GETAPPVERSIONLIST
+	}
+}
+
 function getAppListSuccess(data){
 	console.log("getAppListSuccess",data);
 	return{

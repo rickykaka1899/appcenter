@@ -8,13 +8,13 @@ import {
   Image,
   Text,
   FlatList,
-  TouchableHighlight
+  TouchableHighlight,
+  Alert
 } from 'react-native';
 
 
 import * as Actions from "../actions/AppActions";  //替换为当前actions
 
-import ItemCell from "../common/ItemCell"
 import GridCell from "../common/GridCell"
 
 
@@ -27,6 +27,31 @@ class AppListPage extends React.Component{
     const { navigate } = this.props.navigation;
     navigate("appdetail",{item:item});
   }
+
+  onInfoPress = item =>{
+    this.props.actions.getAppDetail(item.id);    
+  }
+
+  componentDidUpdate(){
+    const detail = this.props.detail;
+    // const showAlert = this.props.showalert;
+    if (detail != "") {
+      this.showAlert(detail)
+    }  
+  }
+
+  showAlert = text =>{
+    Alert.alert(
+      "hello",
+      text,
+      [
+        {text: 'OK', onPress: () => 
+          console.log('OK Pressed!')
+        }
+      ]
+    )
+  }
+
 
   componentDidMount(){
     this.props.actions.getAppList();
@@ -54,7 +79,7 @@ class AppListPage extends React.Component{
         renderItem={({item,index}) => 
           <TouchableHighlight onPress={() => this.onItemPress(item)}>
             <View>
-              <GridCell data={item} index={index} {...this.props}/>
+              <GridCell data={item} index={index} infoPress={() =>this.onInfoPress(item)}/>
             </View>
           </TouchableHighlight>}
         onRefresh={this.onRefresh}
@@ -76,6 +101,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
+    // alertshow:state.AppReducer.alertShow,
+    detail:state.AppReducer.appDetail,    
     appList: state.AppReducer.appList //替换为当前reducer
   };
 };
