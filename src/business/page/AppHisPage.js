@@ -12,6 +12,7 @@ import {
   TouchableHighlight
 } from 'react-native';
 
+import * as Animatable from 'react-native-animatable';
 
 import * as Actions from "../actions/AppActions";  //替换为当前actions
 
@@ -31,6 +32,8 @@ class AppDetailPage extends React.Component{
     const { state } = this.props.navigation;
     var id = state.params.item.id;
     this.props.actions.getAppVersionList(id);
+    // console.log("componentDidMount")
+    // this.refs.hiscell.bounceIn(2000)
   }
 
   componentWillUnmount(){
@@ -186,14 +189,14 @@ downLoadAPK = (item) =>{
     //首位不显示
     if (index===0 ||index === versionlist.length-1) {
         return(
-            <View/>
+            <Animatable.View ref="hiscell"/>
         )
     }
     return(
-        <View style={styles.cell}>
+        <Animatable.View ref="hiscell" style={styles.cell}>
             {this.renderTimeLine()}
             {this.renderContent(item)}
-        </View>
+        </Animatable.View>
     )
   }
 

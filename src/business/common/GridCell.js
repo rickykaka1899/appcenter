@@ -15,6 +15,8 @@ import {
 
 import RNFS from 'react-native-fs';
 
+import * as Animatable from 'react-native-animatable';
+
 const {height, width} = Dimensions.get('window');
 
 const downloadPic = require("../../assets/download.png")
@@ -22,7 +24,13 @@ const infoPic = require("../../assets/info.png")
 
 const iosPrefix = "itms-services://?action=download-manifest&url="
 
+
 export default class GridCell extends React.Component{
+
+    componentDidMount(){
+        console.log("componentDidMount")
+        this.refs.cell.bounceIn(2000)
+    }
 
     infoPress =() =>{
         const item = this.props.data;
@@ -88,7 +96,7 @@ export default class GridCell extends React.Component{
             name = name.substr(0,name.length-4)
         }     
         return(
-            <View style={index%2 === 0 ? [styles.leftView,styles.contentView]:[styles.rightView,styles.contentView]}>
+            <Animatable.View ref="cell" style={index%2 === 0 ? [styles.leftView,styles.contentView]:[styles.rightView,styles.contentView]}>
                 <View style={styles.topView}>
                     <Image style={styles.appImg} source={{uri:picurl}} />
                     <TouchableHighlight onPress={this.downLoadPress}>
@@ -104,7 +112,7 @@ export default class GridCell extends React.Component{
                         </TouchableHighlight>
                     </View>
                 </View>
-            </View>
+            </Animatable.View>
         )
     }
 
