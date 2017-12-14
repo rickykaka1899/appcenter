@@ -28,7 +28,7 @@ class AppListPage extends React.Component{
     navigate("appdetail",{item:item});
   }
 
-  componentWillMount(){
+  componentDidMount(){
     this.props.actions.getAppList();
   }
 
@@ -41,15 +41,20 @@ class AppListPage extends React.Component{
   };
 
   render() {
-    const applist = this.props.appList;    
+    const applist = this.props.appList;
+    if (applist == null) {
+      return(
+          <View style={styles.container}>
+          </View>
+      )
+  }else{
     return (
       <FlatList style={styles.container}   
-        ItemSeparatorComponent={this.separator}      
         data={applist}
-        renderItem={({item}) => 
+        renderItem={({item,index}) => 
           <TouchableHighlight onPress={() => this.onItemPress(item)}>
             <View>
-              <GridCell data={item} {...this.props}/>
+              <GridCell data={item} index={index} {...this.props}/>
             </View>
           </TouchableHighlight>}
         onRefresh={this.onRefresh}
@@ -57,18 +62,15 @@ class AppListPage extends React.Component{
         numColumns={2}
       />
     )
+    }
   }
 }
 
 const styles = StyleSheet.create({
   container:{
     flex:1,
-    backgroundColor:"#DBDBDB",
-  },
-  separator: {
-    height: 0.5,
-    backgroundColor: "#e5e5e5"
-},
+    backgroundColor:"#F2F2F2",
+  }
 });
 
 

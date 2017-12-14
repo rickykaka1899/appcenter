@@ -34,7 +34,7 @@ export function getAppDetail(param){
 		dispatch(
 			request
 				.request(url, options)
-				.then(data => getUserListSuccess(data))
+				.then(data => getAppDetailSuccess(data))
 		);
 	};
 }
@@ -55,7 +55,7 @@ export function getAppVersionList(param){
 }
 
 function getAppListSuccess(data){
-	console.log(data);
+	console.log("getAppListSuccess",data);
 	return{
 		type:TYPES.GETAPPLIST,
 		applist:data
@@ -63,7 +63,7 @@ function getAppListSuccess(data){
 }
 
 function getAppVersionListSuccess(data){
-	console.log(data);
+	console.log("getAppVersionListSuccess",data);
 	return{
 		type:TYPES.GETAPPVERSIONLIST,
 		appversionlist:data
@@ -71,5 +71,9 @@ function getAppVersionListSuccess(data){
 }
 
 function getAppDetailSuccess(data){
-
+	console.log("getAppDetailSuccess",data);
+	return{
+		type:TYPES.GETAPPDETAIL,
+		appdetail:data
+	}
 }

@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import AppListPage from "../business/page/AppListPage"
 import AppGridListPage from "../business/page/AppGridListPage"
 import AppDetailPage from "../business/page/AppDetailPage"
+import AppHisPage from "../business/page/AppHisPage"
 
 
 export default class AppNavigator extends Component {
@@ -13,7 +14,7 @@ export default class AppNavigator extends Component {
                 screen: AppListPage
             },
             appdetail:{
-                screen: AppDetailPage
+                screen: AppHisPage
             }
         };
         const StackNavigatorConfig = {
@@ -22,9 +23,9 @@ export default class AppNavigator extends Component {
             navigationOptions: {
                 headerTitleStyle: {
                     fontSize: 18,
-                    color: "#333",
+                    color: "##5d77b3",
                     fontWeight: "normal"
-                }
+                }         
             }
         };
         let Navigator = StackNavigator(routeConfigMap, StackNavigatorConfig);

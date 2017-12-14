@@ -78,20 +78,56 @@ export default class GridCell extends React.Component{
 
     }
 
-    render(){
-        const {picurl, name, time} = this.props.data;       
+    renderLeft(){
+        const {picurl, time} = this.props.data;
+        var name = this.props.data.name;
+        if (name.endsWith("NC63")) {
+            name = name.substr(0,name.length-4)
+        }
+        console.log("name is:", name);
         return(
-            <View style={styles.container}>
-                <View style={styles.contentView}>
+            <View style={[styles.leftView,styles.contentView]}>
                 <View style={styles.topView}>
                     <Image style={styles.appImg} source={{uri:picurl}} />
                     <TouchableHighlight onPress={this.downLoad}>
                         <Image source={downloadPic}/>
                     </TouchableHighlight>
                 </View>
-                <Text style={styles.nameText}>{name}</Text>
-                <Text style={styles.timeText}>{time}</Text>
+                <View style={styles.bottomView}>
+                    <Text style={styles.nameText}>{name}</Text>
+                    <Text style={styles.timeText}>{time}</Text>
+                </View>
             </View>
+        )
+    }
+
+    renderRight(){
+        const {picurl, time} = this.props.data;
+        var name = this.props.data.name;        
+        if (name.endsWith("NC63")) {
+            name = name.substr(0,name.length-4)
+        }     
+        return(
+            <View style={[styles.rightView,styles.contentView]}>
+                <View style={styles.topView}>
+                    <Image style={styles.appImg} source={{uri:picurl}} />
+                    <TouchableHighlight onPress={this.downLoad}>
+                        <Image source={downloadPic}/>
+                    </TouchableHighlight>
+                </View>
+                <View style={styles.bottomView}>
+                    <Text style={styles.nameText}>{name}</Text>
+                    <Text style={styles.timeText}>{time}</Text>
+                </View>
+            </View>
+        )
+    }
+
+    render(){
+        const index = this.props.index;   
+        return(
+            <View style={styles.container}>
+                {index%2 === 0 ? this.renderLeft() : this.renderRight()}
             </View>
         )
     }
@@ -100,25 +136,35 @@ export default class GridCell extends React.Component{
 const styles = StyleSheet.create({
     container:{
         width:width/2,
-        height:160,
+        height:156,
         justifyContent: "center",
-        alignItems:"center",  
-        backgroundColor:"#DBDBDB",        
+        backgroundColor:"#F2F2F2",        
+    },
+    leftView:{
+        left:16       
+    },
+    rightView:{
+        left:8      
     },
     contentView:{
         paddingLeft:16,
         paddingTop:16,
         paddingRight:16,
+        paddingBottom:16,
         width:(width-16*3)/2,
         height:140,
         backgroundColor:"#FFFFFF",
         borderRadius: 8,
-        justifyContent: "space-around",        
+        justifyContent: "space-around",            
     },
     topView:{
         flexDirection:"row",
         justifyContent: "space-between",
         alignItems:"center",
+    },
+    bottomView:{
+        top:8,
+        justifyContent: "center",  
     },
     appImg:{
         width:50,
@@ -129,7 +175,8 @@ const styles = StyleSheet.create({
         color:"#333333"
     },
     timeText:{
+        top:4,
         fontSize:14,
-        color:"#999999"
+        color:"#5d77b3"
     },
 })
