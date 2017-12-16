@@ -30,11 +30,11 @@ export function getAppDetail(param){
 		let options = {
             
 		};
-		let url = getAppDetailActionType+"&id="+encodeURI(param);
+		let url = getAppDetailActionType+"&id="+encodeURI(param.id);
 		dispatch(
 			request
 				.request(url, options)
-				.then(data => getAppDetailSuccess(data))
+				.then(data => getAppDetailSuccess({name:param.name,data:data.detail}))
 		);
 	};
 }
@@ -52,12 +52,6 @@ export function getAppVersionList(param){
 				.then(data => getAppVersionListSuccess(data))
 		);
 	};
-}
-
-export function dismissAlert() {
-	return{
-		type:TYPES.GETAPPVERSIONLIST
-	}
 }
 
 function getAppListSuccess(data){

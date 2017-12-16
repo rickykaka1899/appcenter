@@ -29,24 +29,25 @@ class AppListPage extends React.Component{
   }
 
   onInfoPress = item =>{
-    this.props.actions.getAppDetail(item.id);    
+    this.props.actions.getAppDetail(item);    
   }
 
   componentDidUpdate(){
     const detail = this.props.detail;
-    // const showAlert = this.props.showalert;
-    if (detail != "") {
+    const showAlert = this.props.showalert;
+    if (showAlert) {
       this.showAlert(detail)
     }  
   }
 
-  showAlert = text =>{
+  showAlert = detail =>{
     Alert.alert(
-      "hello",
-      text,
+      detail.name,
+      detail.data,
       [
-        {text: 'OK', onPress: () => 
-          console.log('OK Pressed!')
+        {text: 'OK', onPress: () => {
+            console.log('OK Pressed!')
+          }
         }
       ]
     )
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    // alertshow:state.AppReducer.alertShow,
+    alertshow:state.AppReducer.alertShow,
     detail:state.AppReducer.appDetail,    
     appList: state.AppReducer.appList //替换为当前reducer
   };

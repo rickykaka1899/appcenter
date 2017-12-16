@@ -26,18 +26,13 @@ const infoPic = require("../../assets/info.png")
 const iosPrefix = "itms-services://?action=download-manifest&url="
 
 
-export default class GridCell extends React.Component{
+export default class Hiscell extends React.Component{
     constructor(props){
         super(props)
         this.state={
             progressNum:0,
             showProgress:false
         }
-    }
-
-    componentDidMount(){
-        console.log("componentDidMount")
-        this.refs.cell.bounceIn(2000)
     }
 
     infoPress =() =>{
@@ -59,7 +54,7 @@ export default class GridCell extends React.Component{
 
     downLoadPress =() =>{
         if (Platform.OS === "ios") {
-            const {downloadurl} = this.props.data;   
+            const {downloadurl} = this.props.item;   
             if (Linking.canOpenURL((iosPrefix + downloadurl))) {
                 Linking.openURL(iosPrefix + downloadurl)
                 .catch(err => 
@@ -69,7 +64,7 @@ export default class GridCell extends React.Component{
             }
            
         }else if (Platform.OS === "android") {
-            this.downLoadAPK(this.props.data)   
+            this.downLoadAPK(this.props.item)   
         }
     }
 
@@ -124,7 +119,7 @@ export default class GridCell extends React.Component{
 
     }
 
-    renderDownLoadPic = () =>{
+    renderDownLoadPic = (item) =>{
         if (this.state.showProgress) {
             return(
                 <CircleProgressView progress={this.state.progressNum*100}>
@@ -133,108 +128,166 @@ export default class GridCell extends React.Component{
             )
         }else{
             return(
-                <TouchableHighlight onPress={this.downLoadPress}>
+                <TouchableHighlight onPress={() => this.downLoadPress(item)}>
                     <Image source={downloadPic}/>
                 </TouchableHighlight>
             )
         }
-    }
-
-    renderCell(index){
-        const {picurl, time} = this.props.data;
-        var name = this.props.data.name;        
-        if (name.endsWith("NC63")) {
-            name = name.substr(0,name.length-4)
-        }     
-        return(
-            <Animatable.View ref="cell" style={index%2 === 0 ? [styles.leftView,styles.contentView]:[styles.rightView,styles.contentView]}>
-                <View style={styles.topView}>
-                    <Image style={styles.appImg} source={{uri:picurl}} />
-                    {this.renderDownLoadPic()}
+      }
+      
+      
+        renderContent(item){
+          return(
+              <View style={styles.contentView}>
+                  <Text>{item.time}</Text>
+                  <TouchableHighlight onPress={() =>this.infoPress(item)}>
+                    <Image source={infoPic}/>
+                  </TouchableHighlight>
+                  {this.renderDownLoadPic(item)}
+              </View>
+          )
+        }
+      
+        renderHeaderTimeLine(){
+          return(
+              <View style={styles.timelineView}>
+                <View style={styles.hiddenline}/>
+                <View style={styles.pot}/>
+                <View style={styles.line}/>
+              </View>
+          )
+        }
+      
+        renderFooterTimeLine(){
+          return(
+              <View style={styles.timelineView}>
+                <View style={styles.line}/>
+                <View style={styles.pot}/>
+                <View style={styles.hiddenline}/>
+              </View>
+          )
+        }
+      
+        renderTimeLine(){
+            return(
+                <View style={styles.timelineView}>
+                  <View style={styles.line}/>
+                  <View style={styles.pot}/>
+                  <View style={styles.line}/>
                 </View>
-                <View style={styles.bottomView}>
-                    <Text style={styles.nameText}>{name}</Text>
-                    <View style={styles.infoView}>
-                        <Text style={styles.timeText}>{time}</Text>
-                        <TouchableHighlight onPress={this.infoPress}>
-                            <Image source={infoPic}/>
-                        </TouchableHighlight>
-                    </View>
-                </View>
-            </Animatable.View>
-        )
-    }
+            )
+      
+        }
+        renderHeader(item){
+              return(
+                  <View style={styles.cell}>
+                      {this.renderHeaderTimeLine()}
+                      {this.renderContent(item)}
+                  </View>
+              ) 
+        }
+      
+        renderFooter(item){
+              return(
+                  <View style={styles.cell}>
+                      {this.renderFooterTimeLine()}
+                      {this.renderContent(item)}
+                  </View>
+              ) 
+        }
+      
+        renderCell(item){
+          return(
+              <View style={styles.cell}>
+                  {this.renderTimeLine()}
+                  {this.renderContent(item)}
+              </View>
+          )
+        }
 
     render(){
-        const index = this.props.index;   
-        return(
-            <View style={styles.container}>
-                {this.renderCell(index)}
-            </View>
-        )
+        const item = this.props.item
+        const cellType = this.props.cellType;
+        switch (cellType) {
+            case "header":
+                return(
+                    <Animatable.View ref="hiscell" style={styles.container}>
+                        {this.renderHeader(item)}
+                    </Animatable.View>
+                )
+                break;
+            case "footer":
+                return(
+                    <Animatable.View ref="hiscell" style={styles.container}>
+                        {this.renderFooter(item)}
+                    </Animatable.View>
+                )
+                break;
+            default:
+                return(
+                    <Animatable.View ref="hiscell" style={styles.container}>
+                        {this.renderCell(item)}
+                    </Animatable.View>
+                )
+                break;
+        }
     }
 }
 
 const styles = StyleSheet.create({
     container:{
-        width:width/2,
-        height:156,
+        flex:1,
         justifyContent: "center",
         backgroundColor:"#F2F2F2",        
     },
-    leftView:{
-        left:10      
-    },
-    rightView:{
-        left:5     
-    },
-    contentView:{
-        paddingLeft:16,
-        paddingTop:16,
-        paddingRight:16,
-        paddingBottom:16,
-        width:(width-10*3)/2,
-        height:140,
-        backgroundColor:"#FFFFFF",
+    cell:{
+        flex:1,
+        flexDirection:"row",
+        alignItems:"center",
+      },
+      timelineView:{
+        flexDirection:"column",
+        paddingLeft:56,
+        width:48,
+        alignItems:"center"
+      },
+      line:{
+        width:4,
+        backgroundColor:"#003344",
+        height:20
+      },
+      hiddenline:{
+        width:4,
+        backgroundColor:"#F2F2F2",
+        height:20
+      },
+      pot:{
+        width:8,
+        height:8,
+        borderRadius:4,
+        backgroundColor:"#32FFEE"
+      },
+      contentView:{
+        flexDirection:"row",
+        justifyContent: "space-around",
+        alignItems:"center",
+        backgroundColor:"#FFFFFF", 
         borderRadius: 8,
-        justifyContent: "space-around",            
-    },
-    topView:{
-        flexDirection:"row",
-        justifyContent: "space-between",
-        alignItems:"center",
-    },
-    bottomView:{
-        top:8,
-        justifyContent: "center",  
-    },
-    appImg:{
-        width:50,
-        height:50,
-    },
-    nameText:{
-        fontSize:16,
-        color:"#333333"
-    },
-    timeText:{
-        top:4,
-        fontSize:13,
-        color:"#5d77b3"
-    },
-    infoView:{
-        flexDirection:"row",
-        justifyContent:"space-between",
-        alignItems:"center",
-        // height:44
-    },
-    circleView:{
+        height:36,
+        left:32,
+        width:width-136
+      },
+      time:{
+          fontSize:20
+      },
+      circleView:{
         backgroundColor: "white",
         alignItems: "center",
         justifyContent: "center",
         flex: 1
     },
     probability: {
-        fontSize: 7,
+        fontSize: 10,
         color: "#999999"
     },
 })

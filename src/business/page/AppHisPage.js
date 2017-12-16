@@ -9,11 +9,17 @@ import {
   Text,
   FlatList,
   Dimensions,
-  TouchableHighlight
+  TouchableHighlight,
+  Linking,
+  Platform,
+  NativeModules,
+  Alert
 } from 'react-native';
 
-import * as Animatable from 'react-native-animatable';
+import HisCell from "../common/HisCell";
 
+import * as Animatable from 'react-native-animatable';
+import RNFS from 'react-native-fs';
 import * as Actions from "../actions/AppActions";  //替换为当前actions
 
 
@@ -27,20 +33,35 @@ class AppDetailPage extends React.Component{
         title: "历史记录",
       });
 
-
   componentDidMount(){
     const { state } = this.props.navigation;
     var id = state.params.item.id;
     this.props.actions.getAppVersionList(id);
-    // console.log("componentDidMount")
-    // this.refs.hiscell.bounceIn(2000)
   }
 
-  componentWillUnmount(){
-      this.setState = {
-        appVersionList:[]
-      }
+  onInfoPress = item =>{
+    this.props.actions.getAppDetail(item);    
   }
+
+  // componentDidUpdate(){
+  //   const detail = this.props.detail;
+  //   // const showAlert = this.props.showalert;
+  //   if (detail.length>0) {
+  //     this.showAlert(detail)
+  //   }  
+  // }
+
+  // showAlert = detail =>{
+  //   Alert.alert(
+  //     detail.name,
+  //     detail.data,
+  //     [
+  //       {text: 'OK', onPress: () => 
+  //         console.log('OK Pressed!')
+  //       }
+  //     ]
+  //   )
+  // }
 
   onRefresh = () =>{
     const { state } = this.props.navigation;
@@ -48,108 +69,6 @@ class AppDetailPage extends React.Component{
     this.props.actions.getAppVersionList(id);   
   }
 
-  infoPress =(item) =>{
-    // const item = this.props.data;
-    console.log(item)
-    this.props.actions.getAppDetail(item.id);    
-  }
-
-  downLoadPress =(item) =>{
-    if (Platform.OS === "ios") {
-        const {downloadurl} = item;   
-        Linking.openURL(iosPrefix + downloadurl)
-               .catch(err => 
-                console.error('An error occurred', err));
-    }else if (Platform.OS === "android") {
-        this.downLoadAPK(item)   
-    }
-  }
-
-downLoadAPK = (item) =>{        
-    const{name,time,downloadurl} = item;
-    // 文件地址
-    const downloadDest = `${RNFS.DocumentDirectoryPath}/${name+"_"+time}.apk`;
-    console.log("apk file is:",downloadDest)
-    const options = {
-        fromUrl: downloadurl,
-        toFile: downloadDest,
-        // background: true,
-        begin: (res) => {
-            console.log('begin', res);
-            console.log('contentLength:', res.contentLength / 1024 / 1024, 'M');
-        },
-        progress: (res) => {
-
-            let pro = res.bytesWritten / res.contentLength;
-            console.log("now process is:"+pro)
-            this.setState({
-                progressNum: pro,
-            });
-        },
-        progressDivider: 1
-    };
-    try {
-        const ret = RNFS.downloadFile(options);
-        ret.promise.then(res => {
-            console.log('success', res);
-
-            console.log('file://' + downloadDest)
-
-        }).catch(err => {
-            console.log('err', err);
-        });
-    }
-    catch (e) {
-        console.log("err" + error);
-    }
-
-}
-
-
-  renderContent(item){
-    return(
-        <View style={styles.contentView}>
-            <Text>{item.time}</Text>
-            <TouchableHighlight onPress={() =>this.infoPress(item)}>
-              <Image source={infoPic}/>
-            </TouchableHighlight>
-            <TouchableHighlight onPress={() =>this.downLoadPress(item)}>
-              <Image source={downloadPic}/>
-            </TouchableHighlight>
-        </View>
-    )
-  }
-
-  renderHeaderTimeLine(){
-    return(
-        <View style={styles.timelineView}>
-          <View style={styles.hiddenline}/>
-          <View style={styles.pot}/>
-          <View style={styles.line}/>
-        </View>
-    )
-  }
-
-  renderFooterTimeLine(){
-    return(
-        <View style={styles.timelineView}>
-          <View style={styles.line}/>
-          <View style={styles.pot}/>
-          <View style={styles.hiddenline}/>
-        </View>
-    )
-  }
-
-  renderTimeLine(){
-      return(
-          <View style={styles.timelineView}>
-            <View style={styles.line}/>
-            <View style={styles.pot}/>
-            <View style={styles.line}/>
-          </View>
-      )
-
-  }
   renderHeader(){
     const versionlist = this.props.versionList;
     if (versionlist.length === 0) {
@@ -157,12 +76,9 @@ downLoadAPK = (item) =>{
             <View />
         ) 
     }else{
-        var item = versionlist[versionlist.length-1];
+        var item = versionlist[0];
         return(
-            <View style={styles.cell}>
-                {this.renderHeaderTimeLine()}
-                {this.renderContent(item)}
-            </View>
+            <HisCell item={item} cellType={"header"} infoPress={() =>this.onInfoPress(item)}/>
         ) 
     }      
   }
@@ -176,10 +92,7 @@ downLoadAPK = (item) =>{
     }else{
         var item = versionlist[versionlist.length-1];
         return(
-            <View style={styles.cell}>
-                {this.renderFooterTimeLine()}
-                {this.renderContent(item)}
-            </View>
+          <HisCell item={item} cellType={"footer"} infoPress={() =>this.onInfoPress(item)}/>
         ) 
     }      
   }
@@ -189,15 +102,13 @@ downLoadAPK = (item) =>{
     //首位不显示
     if (index===0 ||index === versionlist.length-1) {
         return(
-            <Animatable.View ref="hiscell"/>
+          <View />
         )
+    }else{
+      return(
+        <HisCell item={item} cellType={"content"} infoPress={() =>this.onInfoPress(item)}/>  
+      )
     }
-    return(
-        <Animatable.View ref="hiscell" style={styles.cell}>
-            {this.renderTimeLine()}
-            {this.renderContent(item)}
-        </Animatable.View>
-    )
   }
 
   render() {
@@ -239,47 +150,7 @@ const styles = StyleSheet.create({
     width:60,
     height:60,
   },
-  cell:{
-    flex:1,
-    flexDirection:"row",
-    // justifyContent: "space-between",
-    alignItems:"center",
-  },
-  timelineView:{
-    flexDirection:"column",
-    paddingLeft:56,
-    width:48,
-    alignItems:"center"
-  },
-  line:{
-    width:4,
-    backgroundColor:"#003344",
-    height:20
-  },
-  hiddenline:{
-    width:4,
-    backgroundColor:"#F2F2F2",
-    height:20
-  },
-  pot:{
-    width:8,
-    height:8,
-    borderRadius:4,
-    backgroundColor:"#32FFEE"
-  },
-  contentView:{
-    flexDirection:"row",
-    justifyContent: "space-around",
-    alignItems:"center",
-    backgroundColor:"#FFFFFF", 
-    borderRadius: 8,
-    height:36,
-    left:32,
-    width:width-136
-  },
-  time:{
-      fontSize:20
-  }
+  
 });
 
 
