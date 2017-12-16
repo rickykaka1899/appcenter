@@ -33,9 +33,8 @@ class AppListPage extends React.Component{
   }
 
   componentDidUpdate(){
-    const detail = this.props.detail;
-    const showAlert = this.props.showalert;
-    if (showAlert) {
+    const {detail,alertshow} = this.props
+    if (alertshow) {
       this.showAlert(detail)
     }  
   }

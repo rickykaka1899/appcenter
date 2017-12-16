@@ -13,13 +13,15 @@ export default function AppReducer(
 	switch (action.type) {
 		case TYPES.GETAPPLIST:{
 			return Object.assign({}, state, {
-                appList: action.applist.list
+				appList: action.applist.list,
+				alertShow:false				
             });
 		}
 		break;
 		case TYPES.GETAPPVERSIONLIST:{
 			return Object.assign({}, state, {
-                appVersionList: action.appversionlist.list
+				appVersionList: action.appversionlist.list,
+				alertShow:false
             });
 		}
 		break;
