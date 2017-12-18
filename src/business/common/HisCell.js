@@ -9,7 +9,7 @@ import {
   Dimensions,
   Platform,
   Linking,
-  TouchableHighlight,
+  TouchableOpacity,
   NativeModules
 } from 'react-native';
 
@@ -20,8 +20,8 @@ import CircleProgressView from "./CircleProgressView";
 
 const {height, width} = Dimensions.get('window');
 
-const downloadPic = require("../../assets/download.png")
-const infoPic = require("../../assets/info.png")
+const downloadPic = require("../../assets/btn_download.png")
+const infoPic = require("../../assets/btn_more.png")
 
 const iosPrefix = "itms-services://?action=download-manifest&url="
 
@@ -128,9 +128,9 @@ export default class Hiscell extends React.Component{
             )
         }else{
             return(
-                <TouchableHighlight onPress={() => this.downLoadPress(item)}>
+                <TouchableOpacity onPress={() => this.downLoadPress(item)}>
                     <Image source={downloadPic}/>
-                </TouchableHighlight>
+                </TouchableOpacity>
             )
         }
       }
@@ -139,10 +139,10 @@ export default class Hiscell extends React.Component{
         renderContent(item){
           return(
               <View style={styles.contentView}>
-                  <Text>{item.time}</Text>
-                  <TouchableHighlight onPress={() =>this.infoPress(item)}>
+                  <Text style={styles.time}>{item.time}</Text>
+                  <TouchableOpacity onPress={() =>this.infoPress(item)}>
                     <Image source={infoPic}/>
-                  </TouchableHighlight>
+                  </TouchableOpacity>
                   {this.renderDownLoadPic(item)}
               </View>
           )
@@ -247,38 +247,39 @@ const styles = StyleSheet.create({
       },
       timelineView:{
         flexDirection:"column",
-        paddingLeft:56,
-        width:48,
-        alignItems:"center"
+        paddingLeft:18,
+        width:45,
+        alignItems:"center",
+        backgroundColor:"#FFFFFF"
       },
       line:{
-        width:4,
-        backgroundColor:"#003344",
-        height:20
+        width:1,
+        backgroundColor:"#E5E5E5",
+        height:21
       },
       hiddenline:{
-        width:4,
-        backgroundColor:"#F2F2F2",
-        height:20
+        width:1,
+        backgroundColor:"#FFFFFF",
+        height:21
       },
       pot:{
-        width:8,
-        height:8,
-        borderRadius:4,
-        backgroundColor:"#32FFEE"
+        width:5,
+        height:5,
+        borderRadius:2,
+        backgroundColor:"#5D77B3"
       },
       contentView:{
         flexDirection:"row",
         justifyContent: "space-around",
         alignItems:"center",
         backgroundColor:"#FFFFFF", 
-        borderRadius: 8,
-        height:36,
-        left:32,
-        width:width-136
+        height:47,
+        width:width-45
       },
       time:{
-          fontSize:20
+          fontSize:14,
+          color:"#333333",
+          width:110
       },
       circleView:{
         backgroundColor: "white",

@@ -9,7 +9,7 @@ import {
   Text,
   FlatList,
   Dimensions,
-  TouchableHighlight,
+  TouchableOpacity,
   Linking,
   Platform,
   NativeModules,
@@ -22,9 +22,6 @@ import * as Animatable from 'react-native-animatable';
 import RNFS from 'react-native-fs';
 import * as Actions from "../actions/AppActions";  //替换为当前actions
 
-
-const downloadPic = require("../../assets/download.png")
-const infoPic = require("../../assets/info.png")
 
 const {height, width} = Dimensions.get('window');
 
@@ -43,25 +40,6 @@ class AppDetailPage extends React.Component{
     this.props.actions.getAppDetail(item);    
   }
 
-  // componentDidUpdate(){
-  //   const detail = this.props.detail;
-  //   // const showAlert = this.props.showalert;
-  //   if (detail.length>0) {
-  //     this.showAlert(detail)
-  //   }  
-  // }
-
-  // showAlert = detail =>{
-  //   Alert.alert(
-  //     detail.name,
-  //     detail.data,
-  //     [
-  //       {text: 'OK', onPress: () => 
-  //         console.log('OK Pressed!')
-  //       }
-  //     ]
-  //   )
-  // }
 
   onRefresh = () =>{
     const { state } = this.props.navigation;
@@ -118,7 +96,10 @@ class AppDetailPage extends React.Component{
         <View style={styles.container}>
             <View style={styles.detailView}>
                 <Image style={styles.detaiImg} source={{uri:picurl}}/>
-                <Text>{name}</Text>
+                <Text style={styles.detaiText}>{name}</Text>
+            </View>
+            <View style={styles.hisTitleView}>
+                <Text style={styles.hisTitleText}>历史记录</Text>
             </View>
             <FlatList style={styles.container}   
                 data={versionlist}
@@ -141,15 +122,33 @@ const styles = StyleSheet.create({
     backgroundColor:"#F2F2F2"
   },
   detailView:{
-    paddingLeft:32,
+    paddingLeft:20,
     flexDirection:"row",
     alignItems:"center",
-    height:92
+    height:100,
+    backgroundColor:"#FFFFFF"
   },
   detaiImg:{
     width:60,
     height:60,
+    borderRadius:4
   },
+  detaiText:{
+    left:16,
+    fontSize:18,
+    color:"#333333"
+  },
+  hisTitleView:{
+    top:10,
+    backgroundColor:"#FFFFFF",
+    height:50
+  },
+  hisTitleText:{
+    left:10,
+    top:20,
+    fontSize:12,
+    color:"#333333"
+  }
   
 });
 

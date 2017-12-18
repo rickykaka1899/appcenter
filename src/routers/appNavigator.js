@@ -21,8 +21,8 @@ export default class AppNavigator extends Component {
             navigationOptions: {
                 headerTitleStyle: {
                     fontSize: 18,
-                    color: "##5d77b3",
-                    fontWeight: "normal"
+                    color: "#333333",
+                    fontWeight: "normal",
                 }         
             }
         };

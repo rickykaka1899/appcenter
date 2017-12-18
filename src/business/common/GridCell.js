@@ -9,7 +9,7 @@ import {
   Dimensions,
   Platform,
   Linking,
-  TouchableHighlight,
+  TouchableOpacity,
   NativeModules
 } from 'react-native';
 
@@ -20,8 +20,8 @@ import CircleProgressView from "./CircleProgressView";
 
 const {height, width} = Dimensions.get('window');
 
-const downloadPic = require("../../assets/download.png")
-const infoPic = require("../../assets/info.png")
+const downloadPic = require("../../assets/btn_download.png")
+const infoPic = require("../../assets/btn_more.png")
 
 const iosPrefix = "itms-services://?action=download-manifest&url="
 
@@ -133,9 +133,9 @@ export default class GridCell extends React.Component{
             )
         }else{
             return(
-                <TouchableHighlight onPress={this.downLoadPress}>
+                <TouchableOpacity onPress={this.downLoadPress}>
                     <Image source={downloadPic}/>
-                </TouchableHighlight>
+                </TouchableOpacity>
             )
         }
     }
@@ -156,9 +156,9 @@ export default class GridCell extends React.Component{
                     <Text style={styles.nameText}>{name}</Text>
                     <View style={styles.infoView}>
                         <Text style={styles.timeText}>{time}</Text>
-                        <TouchableHighlight onPress={this.infoPress}>
+                        <TouchableOpacity onPress={this.infoPress}>
                             <Image source={infoPic}/>
-                        </TouchableHighlight>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </Animatable.View>
@@ -178,7 +178,7 @@ export default class GridCell extends React.Component{
 const styles = StyleSheet.create({
     container:{
         width:width/2,
-        height:156,
+        height:166,
         justifyContent: "center",
         backgroundColor:"#F2F2F2",        
     },
@@ -194,9 +194,9 @@ const styles = StyleSheet.create({
         paddingRight:16,
         paddingBottom:16,
         width:(width-10*3)/2,
-        height:140,
+        height:156,
         backgroundColor:"#FFFFFF",
-        borderRadius: 8,
+        borderRadius: 4,
         justifyContent: "space-around",            
     },
     topView:{
@@ -211,30 +211,25 @@ const styles = StyleSheet.create({
     appImg:{
         width:50,
         height:50,
+        borderRadius: 4,
     },
     nameText:{
         fontSize:16,
         color:"#333333"
     },
     timeText:{
-        top:4,
-        fontSize:13,
+        fontSize:12,
         color:"#5d77b3"
     },
     infoView:{
         flexDirection:"row",
         justifyContent:"space-between",
         alignItems:"center",
-        // height:44
     },
     circleView:{
         backgroundColor: "white",
         alignItems: "center",
         justifyContent: "center",
         flex: 1
-    },
-    probability: {
-        fontSize: 7,
-        color: "#999999"
-    },
+    }
 })

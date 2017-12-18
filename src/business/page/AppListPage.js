@@ -8,7 +8,7 @@ import {
   Image,
   Text,
   FlatList,
-  TouchableHighlight,
+  TouchableOpacity,
   Alert
 } from 'react-native';
 
@@ -77,11 +77,11 @@ class AppListPage extends React.Component{
       <FlatList style={styles.container}   
         data={applist}
         renderItem={({item,index}) => 
-          <TouchableHighlight onPress={() => this.onItemPress(item)}>
+          <TouchableOpacity onPress={() => this.onItemPress(item)}>
             <View>
               <GridCell data={item} index={index} infoPress={() =>this.onInfoPress(item)}/>
             </View>
-          </TouchableHighlight>}
+          </TouchableOpacity>}
         onRefresh={this.onRefresh}
         refreshing={false}
         numColumns={2}
